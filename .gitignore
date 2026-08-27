@@ -1,0 +1,21 @@
+# Environments & Secrets
+.env
+.env.*
+!.env.example
+venv/
+env/
+ENV/
+.venv/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local database / uploads (Optional)
+*.sqlite3
+*.db
