@@ -9,6 +9,7 @@ from app.core.config import frontend_url
 from app.router.auth_router import router as auth_router
 from app.router.user_router import router as user_router
 from app.router.product_router import router as product_router
+from app.router.category_router import router as category_router
 from app.router.cart_router import router as cart_router
 from app.router.client_router import router as client_router
 from app.router.blog_router import router as blog_router
@@ -34,10 +35,12 @@ api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(auth_router)
 api_router.include_router(user_router)
 api_router.include_router(product_router)
+api_router.include_router(category_router)
 api_router.include_router(cart_router)
 api_router.include_router(client_router)
 api_router.include_router(blog_router)
 api_router.include_router(upload_router)
 
 app.include_router(api_router)
+
 

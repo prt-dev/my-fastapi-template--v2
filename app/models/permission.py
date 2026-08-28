@@ -13,6 +13,16 @@ class ProductPermissions:
     LIST = "products:list"
 
 
+class CategoryPermissions:
+    """Predefined permission names for category module."""
+    CREATE = "categories:create"
+    READ = "categories:read"
+    UPDATE = "categories:update"
+    DELETE = "categories:delete"
+    LIST = "categories:list"
+
+
+
 class ClientPermissions:
     """Predefined permission names for client module."""
     CREATE = "clients:create"

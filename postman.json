@@ -1,0 +1,633 @@
+{
+  "info": {
+    "_postman_id": "fastapi-template-collection-v2",
+    "name": "FastAPI Template API",
+    "description": "Complete API Collection for FastAPI Backend including Auth, Users, Categories, Products, Carts, Clients, Blogs, and Uploads.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "host",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_ACCESS_TOKEN_HERE",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"username\": \"testuser\",\n  \"password\": \"secret123\",\n  \"role_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/auth/register",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"secret123\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/auth/login",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/users/profile",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "users", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/users/all?page=1&limit=10&search=&role_id=",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "users", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "role_id", "value": "" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/categories/all?page=1&limit=10&search=&parent_id=&status=",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "categories", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "parent_id", "value": "" },
+                { "key": "status", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/categories/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "categories", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/categories/slug/poshak",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "categories", "slug", "poshak"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Poshak\",\n  \"slug\": \"poshak\",\n  \"description\": \"Devotional clothes and dresses for Laddu Gopal\",\n  \"image_url\": \"/uploads/categories/poshak.jpg\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/categories/create",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "categories", "create"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Designer Poshak\",\n  \"slug\": \"designer-poshak\",\n  \"description\": \"Premium hand-embroidered dresses\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/categories/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "categories", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/categories/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "categories", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/products/all?page=1&limit=10&search=&category_id=&status=",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "products", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "category_id", "value": "" },
+                { "key": "status", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/products/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "products", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Royal Yellow Silk Poshak\",\n  \"description\": \"Handcrafted silk poshak for Laddu Gopal Ji\",\n  \"price\": 149.0,\n  \"sku\": \"POSHAK-YEL-001\",\n  \"stock_quantity\": 50,\n  \"category_id\": 1,\n  \"image_url\": \"/uploads/products/poshak1.jpg\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/products/create",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "products", "create"]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Royal Yellow Silk Poshak (Updated)\",\n  \"price\": 159.0,\n  \"stock_quantity\": 45,\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/products/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "products", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/products/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "products", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carts",
+      "item": [
+        {
+          "name": "1. Create Cart Item / Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"variant\": \"Size 4\",\n  \"quantity\": 1,\n  \"price\": 149.0\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/carts/create",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "create"]
+            }
+          }
+        },
+        {
+          "name": "2. Get My Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/carts/my-cart",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "my-cart"]
+            }
+          }
+        },
+        {
+          "name": "3. Get All Cart Items (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/carts/all?page=1&limit=10&search=&user_id=&product_id=",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "user_id", "value": "" },
+                { "key": "product_id", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Get Single Cart Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/carts/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "1"]
+            }
+          }
+        },
+        {
+          "name": "5. Update Cart Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"variant\": \"Size 4\",\n  \"quantity\": 2,\n  \"price\": 149.0\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/carts/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "1"]
+            }
+          }
+        },
+        {
+          "name": "6. Delete Single Cart Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/carts/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "1"]
+            }
+          }
+        },
+        {
+          "name": "7. Clear My Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/carts/clear",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "carts", "clear"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/clients/all?page=1&limit=10&search=&status=",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "clients", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "status", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Client by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/clients/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "clients", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Gita Construction\",\n  \"email\": \"contact@gitaconstruction.com\",\n  \"phone\": \"+919876543210\",\n  \"company\": \"Gita Construction Pvt Ltd\",\n  \"address\": \"Vrindavan, UP\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/clients/create",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "clients", "create"]
+            }
+          }
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Gita Construction Updated\",\n  \"phone\": \"+919876543211\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/clients/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "clients", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/clients/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "clients", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        {
+          "name": "Get All Blogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/blogs/all?page=1&limit=10&search=&status=&client_id=&author_id=",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "blogs", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "status", "value": "" },
+                { "key": "client_id", "value": "" },
+                { "key": "author_id", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Blog by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/blogs/slug/importance-of-laddu-gopal-poshak",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "blogs", "slug", "importance-of-laddu-gopal-poshak"]
+            }
+          }
+        },
+        {
+          "name": "Get Blog by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/blogs/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "blogs", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Blog",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Significance of Laddu Gopal Shringar\",\n  \"slug\": \"significance-of-laddu-gopal-shringar\",\n  \"excerpt\": \"Understanding the spiritual essence of daily deity dressing\",\n  \"content\": \"<p>Full blog content goes here...</p>\",\n  \"featured_image\": \"/uploads/blogs/shringar.jpg\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/blogs/create",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "blogs", "create"]
+            }
+          }
+        },
+        {
+          "name": "Update Blog",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Significance of Laddu Gopal Shringar (Updated)\",\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/blogs/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "blogs", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Blog",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/blogs/1",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "blogs", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Uploads",
+      "item": [
+        {
+          "name": "Upload Single Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/upload/image?folder=products",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "upload", "image"],
+              "query": [
+                { "key": "folder", "value": "products" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/upload/images?folder=products",
+              "host": ["{{host}}"],
+              "path": ["api", "v1", "upload", "images"],
+              "query": [
+                { "key": "folder", "value": "products" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

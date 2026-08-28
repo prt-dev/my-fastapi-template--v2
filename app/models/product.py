@@ -1,7 +1,6 @@
 from typing import Optional
-from decimal import Decimal
-from sqlalchemy import Integer, String, Text, Numeric, Float
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, String, Text, Float
+from sqlalchemy.orm import Mapped, mapped_column, relationship, foreign
 
 from app.core.database import Base
 
@@ -23,3 +22,9 @@ class Product(Base):
     category_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     status: Mapped[int] = mapped_column(Integer, default=1)
+    
+    category: Mapped[Optional["Category"]] = relationship(
+        "Category",
+        primaryjoin="foreign(Product.category_id) == Category.id",
+    )
+

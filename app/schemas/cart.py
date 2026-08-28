@@ -2,6 +2,7 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 
+from app.schemas.user import UserOut
 from app.schemas.product import ProductOut
 
 
@@ -14,6 +15,7 @@ class CartOut(BaseModel):
     price: Optional[float] = Field(0.0, ge=0)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    user: Optional[UserOut] = None
     product: Optional[ProductOut] = None
 
     model_config = ConfigDict(
@@ -24,3 +26,4 @@ class CartOut(BaseModel):
 # Request Schema to create/update cart
 class CartIn(CartOut):
     pass
+
