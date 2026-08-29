@@ -23,8 +23,7 @@ def get_all_products(
     status: int | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     return ProductController.get_all_products(
         db=db,
@@ -39,8 +38,7 @@ def get_all_products(
 @router.get("/{product_id}", response_model=ProductOut, status_code=200)
 def get_product(
     product_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     return ProductController.get_product_by_id(db, product_id)
 

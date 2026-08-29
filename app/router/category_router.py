@@ -19,8 +19,7 @@ def get_all_categories(
     status: int | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     return CategoryController.get_all_categories(
         db=db,
@@ -35,8 +34,7 @@ def get_all_categories(
 @router.get("/slug/{slug}", response_model=CategoryOut, status_code=200)
 def get_category_by_slug(
     slug: str,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     return CategoryController.get_category_by_slug(db, slug)
 
@@ -44,8 +42,7 @@ def get_category_by_slug(
 @router.get("/{category_id}", response_model=CategoryOut, status_code=200)
 def get_category(
     category_id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     return CategoryController.get_category_by_id(db, category_id)
 
