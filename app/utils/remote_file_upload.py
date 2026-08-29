@@ -1,31 +1,34 @@
 import os
 from pathlib import Path
+from typing import List, Optional
 import requests
 from fastapi import UploadFile, HTTPException, status
 
 from app.core.config import REMOTE_UPLOAD_API_URL, REMOTE_UPLOAD_BASE_URL
 
-# Reference extensions allowed by PHP script (C:\xampp\htdocs\file_upload_api\upload.php)
+# Config matched to PHP script (C:\xampp\htdocs\file_upload_api\upload.php)
+# Allowed extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'docx', 'txt', 'zip', 'csv']
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp", "pdf", "docx", "txt", "zip", "csv"}
+# Maximum file size: 10 MB (10 * 1024 * 1024 bytes)
 MAX_FILE_SIZE_MB = 10
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 
 
-def upload_file_to_php_api(
-    file: UploadFile,
-    directory: str = "products",
-    api_url: str = REMOTE_UPLOAD_API_URL,
-    base_url: str = REMOTE_UPLOAD_BASE_URL,
-) -> dict:
+def sanitize_directory(directory: Optional[str]) -> str:
     """
-    Uploads a single file to the remote PHP upload API (https://apiapp.hotelmahalaiims.com/uploads.php)
-    based on the reference C:\\xampp\\htdocs\\file_upload_api\\upload.php.
+    Sanitize directory name to prevent path traversal, matching upload.php logic:
+    trim(str_replace(['../', '..\\'], '', $requestedDirectory), '/\\')
+    """
+    if not directory:
+        return "general"
+    clean_dir = str(directory).replace("../", "").replace("..\\", "").strip("/\\ ")
+    return clean_dir if clean_dir else "general"
 
-    :param file: FastAPI UploadFile object
-    :param directory: Destination directory name ($_POST['directory'] in PHP)
-    :param api_url: Remote Core PHP API endpoint
-    :param base_url: Base URL to construct absolute file URLs
-    :return: Formatted response dict containing file_url, relative_url, saved_name, size, etc.
+
+def validate_file(file: UploadFile) -> str:
+    """
+    Validate filename, extension, and file size before sending to PHP upload API.
+    Returns the lowercased file extension.
     """
     if not file.filename:
         raise HTTPException(
@@ -37,37 +40,66 @@ def upload_file_to_php_api(
     if file_ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Extension '{file_ext}' is not allowed. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}",
+            detail=f"Extension '{file_ext}' is not allowed for file '{file.filename}'. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}",
         )
 
+    # Check file size if seekable
     try:
-        # Reset file cursor before reading
+        file.file.seek(0, os.SEEK_END)
+        size = file.file.tell()
+        file.file.seek(0)
+        if size > MAX_FILE_SIZE_BYTES:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"File '{file.filename}' size ({size / (1024*1024):.2f} MB) exceeds limit of {MAX_FILE_SIZE_MB} MB.",
+            )
+    except (AttributeError, io.UnsupportedOperation):
+        pass
+
+    return file_ext
+
+
+def upload_file_to_php_api(
+    file: UploadFile,
+    directory: str = "products",
+    api_url: str = REMOTE_UPLOAD_API_URL,
+    base_url: str = REMOTE_UPLOAD_BASE_URL,
+) -> dict:
+    """
+    Upload a single file to PHP upload API (upload.php).
+    Matches upload.php expectations:
+      - $_POST['directory']
+      - $_FILES['file']
+      - Response with status, directory, uploaded_files, and failed_files
+    """
+    file_ext = validate_file(file)
+    clean_dir = sanitize_directory(directory)
+
+    try:
         file.file.seek(0)
 
-        # Multipart form payload matching PHP $_FILES and $_POST
         files = {
             "file": (
                 file.filename,
                 file.file,
-                file.content_type or "application/octet-stream"
+                file.content_type or "application/octet-stream",
             )
         }
         data = {
-            "directory": directory or "general"
+            "directory": clean_dir
         }
 
-        # Send POST request to the remote PHP endpoint
         response = requests.post(
             api_url,
             files=files,
             data=data,
-            timeout=30
+            timeout=30,
         )
 
         if response.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Remote upload API returned status {response.status_code}: {response.text}",
+                detail=f"Remote upload API returned HTTP {response.status_code}: {response.text}",
             )
 
         result = response.json()
@@ -80,7 +112,7 @@ def upload_file_to_php_api(
 
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Upload failed: {error_msg or 'Unknown error from upload service'}",
+                detail=f"Remote upload failed: {error_msg or 'Unknown error from upload service'}",
             )
 
         uploaded_files = result.get("uploaded_files", [])
@@ -99,6 +131,7 @@ def upload_file_to_php_api(
 
         return {
             "status": "success",
+            "directory": result.get("directory", f"uploads/{clean_dir}"),
             "image_url": full_url,
             "file_url": full_url,
             "relative_url": relative_url,
@@ -117,13 +150,14 @@ def upload_file_to_php_api(
 
 
 def upload_multiple_files_to_php_api(
-    files: list[UploadFile],
+    files: List[UploadFile],
     directory: str = "products",
     api_url: str = REMOTE_UPLOAD_API_URL,
     base_url: str = REMOTE_UPLOAD_BASE_URL,
 ) -> dict:
     """
-    Uploads multiple files in batch to the remote PHP upload API matching $_FILES['files'].
+    Upload multiple files to PHP upload API (upload.php).
+    Sends multipart array 'files[]' and $_POST['directory'].
     """
     if not files:
         raise HTTPException(
@@ -132,14 +166,9 @@ def upload_multiple_files_to_php_api(
         )
 
     for f in files:
-        if not f.filename:
-            continue
-        ext = Path(f.filename).suffix.lstrip(".").lower()
-        if ext not in ALLOWED_EXTENSIONS:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"File '{f.filename}' has unsupported extension '{ext}'.",
-            )
+        validate_file(f)
+
+    clean_dir = sanitize_directory(directory)
 
     try:
         files_payload = []
@@ -151,24 +180,24 @@ def upload_multiple_files_to_php_api(
                     (
                         f.filename,
                         f.file,
-                        f.content_type or "application/octet-stream"
-                    )
+                        f.content_type or "application/octet-stream",
+                    ),
                 )
             )
 
-        data = {"directory": directory or "general"}
+        data = {"directory": clean_dir}
 
         response = requests.post(
             api_url,
             files=files_payload,
             data=data,
-            timeout=60
+            timeout=60,
         )
 
         if response.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Remote upload API returned status {response.status_code}: {response.text}",
+                detail=f"Remote upload API returned HTTP {response.status_code}: {response.text}",
             )
 
         result = response.json()
@@ -191,7 +220,7 @@ def upload_multiple_files_to_php_api(
 
         return {
             "status": result.get("status", "success"),
-            "directory": result.get("directory"),
+            "directory": result.get("directory", f"uploads/{clean_dir}"),
             "uploaded_files": uploaded_list,
             "failed_files": result.get("failed_files", []),
             "count": len(uploaded_list),

@@ -14,6 +14,7 @@ from app.router.cart_router import router as cart_router
 from app.router.client_router import router as client_router
 from app.router.blog_router import router as blog_router
 from app.router.upload_router import router as upload_router
+from app.router.remote_file_upload_router import router as remote_file_upload_router
 
 app = FastAPI(title="FastAPI Template API", version="1.0.0")
 
@@ -40,6 +41,7 @@ api_router.include_router(cart_router)
 api_router.include_router(client_router)
 api_router.include_router(blog_router)
 api_router.include_router(upload_router)
+api_router.include_router(remote_file_upload_router)
 
 app.include_router(api_router)
 
