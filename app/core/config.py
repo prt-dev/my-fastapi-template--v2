@@ -16,7 +16,7 @@ DATABASE_URL = (
 
 
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-REMOTE_UPLOAD_API_URL = os.getenv("REMOTE_UPLOAD_API_URL", "https://apiapp.hotelmahalaiims.com/uploads.php")
+REMOTE_UPLOAD_API_URL = os.getenv("REMOTE_UPLOAD_API_URL", "https://apiapp.hotelmahalaiims.com/upload.php")
 REMOTE_UPLOAD_BASE_URL = os.getenv("REMOTE_UPLOAD_BASE_URL", "https://apiapp.hotelmahalaiims.com")
 
 

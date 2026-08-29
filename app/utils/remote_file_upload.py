@@ -1,4 +1,5 @@
 import os
+import io
 from pathlib import Path
 from typing import List, Optional
 import requests
@@ -6,7 +7,7 @@ from fastapi import UploadFile, HTTPException, status
 
 from app.core.config import REMOTE_UPLOAD_API_URL, REMOTE_UPLOAD_BASE_URL
 
-# Config matched to PHP script (C:\xampp\htdocs\file_upload_api\upload.php)
+# Config matched to PHP script (upload.php)
 # Allowed extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'docx', 'txt', 'zip', 'csv']
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp", "pdf", "docx", "txt", "zip", "csv"}
 # Maximum file size: 10 MB (10 * 1024 * 1024 bytes)
@@ -53,7 +54,7 @@ def validate_file(file: UploadFile) -> str:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"File '{file.filename}' size ({size / (1024*1024):.2f} MB) exceeds limit of {MAX_FILE_SIZE_MB} MB.",
             )
-    except (AttributeError, io.UnsupportedOperation):
+    except Exception:
         pass
 
     return file_ext
@@ -99,10 +100,16 @@ def upload_file_to_php_api(
         if response.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Remote upload API returned HTTP {response.status_code}: {response.text}",
+                detail=f"Remote upload API returned HTTP {response.status_code}: {response.text[:300]}",
             )
 
-        result = response.json()
+        try:
+            result = response.json()
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Remote upload API returned non-JSON response: {response.text[:300]}",
+            )
 
         if result.get("status") != "success":
             failed_info = result.get("failed_files", [])
@@ -197,10 +204,17 @@ def upload_multiple_files_to_php_api(
         if response.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Remote upload API returned HTTP {response.status_code}: {response.text}",
+                detail=f"Remote upload API returned HTTP {response.status_code}: {response.text[:300]}",
             )
 
-        result = response.json()
+        try:
+            result = response.json()
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Remote upload API returned non-JSON response: {response.text[:300]}",
+            )
+
         clean_base_url = base_url.rstrip("/")
 
         uploaded_list = []
