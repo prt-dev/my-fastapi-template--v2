@@ -36,6 +36,14 @@ class CartController:
         return CartService.createCart(db, request, current_user_id=current_user_id)
 
     @staticmethod
+    def create_multiple_cart_items(
+        db: Session,
+        request: list[CartIn],
+        current_user_id: int | None = None
+    ):
+        return CartService.createMultipleCarts(db, request, current_user_id=current_user_id)
+
+    @staticmethod
     def update_cart_item(db: Session, cart_id: int, request: CartIn, current_user_id: int | None = None):
         return CartService.updateCart(db, cart_id, request, current_user_id=current_user_id)
 

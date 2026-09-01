@@ -91,6 +91,22 @@ class CartService:
         return CartRepository.create(db, cart)
 
     @staticmethod
+    def createMultipleCarts(
+        db: Session,
+        request: list[CartIn],
+        current_user_id: int | None = None
+    ):
+        if not request:
+            raise HTTPException(status_code=400, detail="Cart items list cannot be empty")
+
+        result_items = []
+        for item in request:
+            cart = CartService.createCart(db, item, current_user_id=current_user_id)
+            result_items.append(cart)
+
+        return result_items
+
+    @staticmethod
     def updateCart(db: Session, cart_id: int, request: CartIn, current_user_id: int | None = None):
         cart = CartRepository.get_by_id(db, cart_id)
         if not cart:

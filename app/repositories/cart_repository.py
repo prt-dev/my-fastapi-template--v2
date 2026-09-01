@@ -70,6 +70,14 @@ class CartRepository:
         return cart
 
     @staticmethod
+    def create_multiple(db: Session, carts: list[Cart]):
+        db.add_all(carts)
+        db.commit()
+        for cart in carts:
+            db.refresh(cart)
+        return carts
+
+    @staticmethod
     def update(db: Session, cart: Cart, update_data: dict):
         for key, value in update_data.items():
             if hasattr(cart, key) and value is not None:

@@ -70,6 +70,18 @@ def create_cart_item(
     return CartController.create_cart_item(db, request, current_user_id=user_id)
 
 
+# @router.post("/create-multiple", response_model=list[CartOut], status_code=201)
+# @router.post("/bulk", response_model=list[CartOut], status_code=201)
+# @router.post("/bulk-create", response_model=list[CartOut], status_code=201)
+# def create_multiple_cart_items(
+#     request: list[CartIn],
+#     db: Session = Depends(get_db),
+#     current_user=Depends(get_current_user)
+# ):
+#     user_id = _extract_user_id(current_user)
+#     return CartController.create_multiple_cart_items(db, request, current_user_id=user_id)
+
+
 @router.put("/{cart_id}", response_model=CartOut, status_code=200)
 def update_cart_item(
     cart_id: int,
