@@ -20,7 +20,7 @@ app = FastAPI(title="FastAPI Template API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://blog-management-gold.vercel.app", "https://blog-management-gold.vercel.app/", "https://blog-management-git-master-prateek-dev.vercel.app", "https://blog-management-5fbawa4q8-prateek-dev.vercel.app"],
+    allow_origins=["http://localhost:3000", "https://blog-management-gold.vercel.app", "https://blog-management-gold.vercel.app/", "https://blog-management-git-master-prateek-dev.vercel.app", "https://blog-management-5fbawa4q8-prateek-dev.vercel.app","https://laddu-gopal-ashy.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
