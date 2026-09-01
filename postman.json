@@ -153,6 +153,128 @@
               ]
             }
           }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/users/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstname\": \"Radha\",\n  \"lastname\": \"Rani\",\n  \"email\": \"radharani@example.com\",\n  \"phone\": \"9876543210\",\n  \"username\": \"radharani\",\n  \"password\": \"secret123\",\n  \"role_id\": 2,\n  \"status\": 1,\n  \"city\": \"Vrindavan\",\n  \"state\": \"Uttar Pradesh\",\n  \"pincode\": \"281121\",\n  \"address\": \"Near Prem Mandir\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/users/create",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "create"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstname\": \"Radha\",\n  \"lastname\": \"Sharma\",\n  \"phone\": \"9876543211\",\n  \"city\": \"Mathura\",\n  \"state\": \"Uttar Pradesh\",\n  \"pincode\": \"281001\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/users/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Save / Upsert User (Create or Update)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"radharani@example.com\",\n  \"firstname\": \"Radha\",\n  \"lastname\": \"Rani\",\n  \"phone\": \"9876543210\",\n  \"address\": \"Raman Reti, Vrindavan\",\n  \"city\": \"Vrindavan\",\n  \"state\": \"Uttar Pradesh\",\n  \"pincode\": \"281121\",\n  \"notes\": \"Devotee billing details\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/users/save",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "save"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/users/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "1"
+              ]
+            }
+          }
         }
       ]
     },
