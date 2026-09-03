@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "fastapi-template-collection-v2",
     "name": "FastAPI Template API",
-    "description": "Complete API Collection for FastAPI Backend including Auth, Users, Categories, Products, Carts, Clients, Blogs, and Uploads.",
+    "description": "Complete API Collection for FastAPI Backend including Auth, Users, Categories, Products, Carts, Clients, Blogs, Uploads, and Remote File Uploads.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -123,7 +123,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{host}}/api/v1/users/all?page=1&limit=10&search=&role_id=",
+              "raw": "{{host}}/api/v1/users/all?page=1&limit=10&search=&role_id=&exclude_roles=",
               "host": [
                 "{{host}}"
               ],
@@ -149,9 +149,43 @@
                 {
                   "key": "role_id",
                   "value": ""
+                },
+                {
+                  "key": "exclude_roles",
+                  "value": "",
+                  "disabled": true
                 }
               ]
             }
+          }
+        },
+        {
+          "name": "Get User Details (By ID, Email, Username, or Phone)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"radharani@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/users/details",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "details"
+              ]
+            },
+            "description": "Fetch user details by passing lookup parameters (email, phone, username, or id) in the JSON request body."
           }
         },
         {
@@ -1127,6 +1161,175 @@
                 }
               ]
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Remote File Upload",
+      "item": [
+        {
+          "name": "Upload Single Remote Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "directory",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/remote-upload/image?directory=products",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "remote-upload",
+                "image"
+              ],
+              "query": [
+                {
+                  "key": "directory",
+                  "value": "products"
+                }
+              ]
+            },
+            "description": "Upload a single image to the remote PHP upload service (upload.php). Accepts directory via form-data or query param."
+          }
+        },
+        {
+          "name": "Upload Single Remote File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "directory",
+                  "value": "documents",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/remote-upload/file?directory=documents",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "remote-upload",
+                "file"
+              ],
+              "query": [
+                {
+                  "key": "directory",
+                  "value": "documents"
+                }
+              ]
+            },
+            "description": "Upload a single file (pdf, doc, zip, etc.) to the remote PHP upload service (upload.php)."
+          }
+        },
+        {
+          "name": "Upload Multiple Remote Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "directory",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/remote-upload/images?directory=products",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "remote-upload",
+                "images"
+              ],
+              "query": [
+                {
+                  "key": "directory",
+                  "value": "products"
+                }
+              ]
+            },
+            "description": "Upload multiple images simultaneously to the remote PHP upload service."
+          }
+        },
+        {
+          "name": "Upload Multiple Remote Files",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "directory",
+                  "value": "documents",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/remote-upload/files?directory=documents",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "remote-upload",
+                "files"
+              ],
+              "query": [
+                {
+                  "key": "directory",
+                  "value": "documents"
+                }
+              ]
+            },
+            "description": "Upload multiple files simultaneously to the remote PHP upload service."
           }
         }
       ]

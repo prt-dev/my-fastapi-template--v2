@@ -45,6 +45,23 @@ class UserService:
         return user
 
     @staticmethod
+    def getUserByAnyParams(db: Session, user_params: UserIn):
+        if user_params.id:
+            user = UserRepository.get_by_id(db, user_params.id)
+        elif user_params.email:
+            user = UserRepository.get_by_email(db, user_params.email)
+        elif user_params.username:
+            user = UserRepository.get_by_username(db, user_params.username)
+        elif user_params.phone:
+            user = UserRepository.get_by_phone(db, user_params.phone)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_params.id} not found"
+            )
+        return user
+
+    @staticmethod
     def createUser(db: Session, request: UserIn):
         if request.email and UserRepository.get_by_email(db, request.email):
             raise HTTPException(

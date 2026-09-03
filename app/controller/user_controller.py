@@ -30,6 +30,10 @@ class UserController:
         return UserService.getUserById(db, user_id)
 
     @staticmethod
+    def get_user_by_any_params(db: Session, user_params: UserIn):
+        return UserService.getUserByAnyParams(db, user_params)
+
+    @staticmethod
     def create_user(db: Session, request: UserIn):
         return UserService.createUser(db, request)
 
@@ -48,4 +52,4 @@ class UserController:
     @staticmethod
     def delete_user(db: Session, user_id: int):
         return UserService.deleteUser(db, user_id)
-
+
