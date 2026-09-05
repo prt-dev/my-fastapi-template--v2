@@ -45,8 +45,8 @@ def get_all_users(
 
 @router.get("/details", response_model=UserOut, status_code=200)
 def get_user_by_any_params(
+    user_params: UserIn = Depends(),
     db: Session = Depends(get_db),
-    user_params: UserIn = None,
 ):
     return UserController.get_user_by_any_params(db, user_params)
 
