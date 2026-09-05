@@ -547,7 +547,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Royal Yellow Silk Poshak\",\n  \"description\": \"Handcrafted silk poshak for Laddu Gopal Ji\",\n  \"price\": 149.0,\n  \"sku\": \"POSHAK-YEL-001\",\n  \"stock_quantity\": 50,\n  \"category_id\": 1,\n  \"image_url\": \"/uploads/products/poshak1.jpg\",\n  \"status\": 1\n}"
+              "raw": "{\n  \"name\": \"Royal Yellow Silk Poshak\",\n  \"description\": \"Handcrafted silk poshak for Laddu Gopal Ji\",\n  \"price\": 149.0,\n  \"sku\": \"POSHAK-YEL-001\",\n  \"stock_quantity\": 50,\n  \"category_id\": 1,\n  \"image_url\": \"/uploads/products/poshak1.jpg\",\n  \"variant\": \"Size: 0, 1, 2, 3, 4, 5; Color: Yellow, Red, Pink\",\n  \"status\": 1\n}"
             },
             "url": {
               "raw": "{{host}}/api/v1/products/create",

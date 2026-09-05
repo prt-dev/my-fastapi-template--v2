@@ -11,6 +11,7 @@ class ProductController:
         category_id: int | None = None,
         search: str | None = None,
         status: int | None = None,
+        variant: str | None = None,
         page: int = 1,
         limit: int = 10
     ):
@@ -19,6 +20,7 @@ class ProductController:
             category_id=category_id,
             search=search,
             status=status,
+            variant=variant,
             page=page,
             limit=limit
         )

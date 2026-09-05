@@ -24,6 +24,7 @@ class ProductRepository:
         category_id: int | None = None,
         search: str | None = None,
         status: int | None = None,
+        variant: str | None = None,
         page: int = 1,
         limit: int = 10
     ):
@@ -36,11 +37,15 @@ class ProductRepository:
         if status is not None:
             query = query.filter(Product.status == status)
 
+        if variant is not None:
+            query = query.filter(Product.variant.ilike(f"%{variant}%"))
+
         if search is not None:
             query = query.filter(
                 or_(
                     Product.name.ilike(f"%{search}%"),
-                    Product.sku.ilike(f"%{search}%")
+                    Product.sku.ilike(f"%{search}%"),
+                    Product.variant.ilike(f"%{search}%")
                 )
             )
 

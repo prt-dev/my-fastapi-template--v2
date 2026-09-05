@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.models.cart import Cart
+from sqlalchemy import or_
+from app.models.product import Product
 
 
 class CartRepository:
@@ -9,6 +11,17 @@ class CartRepository:
     def get_by_id(db: Session, cart_id: int):
         return db.query(Cart).filter(
             Cart.id == cart_id
+        ).first()
+
+    @staticmethod
+    def get_by_user_product(
+        db: Session,
+        user_id: int,
+        product_id: int
+    ):
+        return db.query(Cart).filter(
+            Cart.user_id == user_id,
+            Cart.product_id == product_id
         ).first()
 
     @staticmethod
@@ -47,8 +60,11 @@ class CartRepository:
             query = query.filter(Cart.product_id == product_id)
 
         if search is not None:
-            query = query.filter(
-                Cart.variant.ilike(f"%{search}%")
+            query = query.outerjoin(Cart.product).filter(
+                or_(
+                    Cart.variant.ilike(f"%{search}%"),
+                    Product.name.ilike(f"%{search}%")
+                )
             )
 
         total = query.count()

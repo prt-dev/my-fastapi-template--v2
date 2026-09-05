@@ -67,11 +67,9 @@ class CartService:
         if not product:
             raise HTTPException(status_code=404, detail="Product not found")
 
-        # Set default price from product if price not specified or 0
         if cart_data.get("price") is None or cart_data.get("price") == 0:
             cart_data["price"] = product.price
 
-        # Check if item with identical product and variant already exists in cart for this user
         existing_item = CartRepository.get_by_user_product_variant(
             db=db,
             user_id=cart_data["user_id"],
@@ -80,7 +78,6 @@ class CartService:
         )
 
         if existing_item:
-            # Increment quantity
             new_quantity = existing_item.quantity + cart_data.get("quantity", 1)
             update_data = {"quantity": new_quantity}
             if cart_data.get("price") is not None and cart_data.get("price") > 0:

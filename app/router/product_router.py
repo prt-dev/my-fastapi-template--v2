@@ -21,6 +21,7 @@ def get_all_products(
     category_id: int | None = None,
     search: str | None = None,
     status: int | None = None,
+    variant: str | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db)
@@ -30,6 +31,7 @@ def get_all_products(
         category_id=category_id,
         search=search,
         status=status,
+        variant=variant,
         page=page,
         limit=limit
     )
