@@ -52,25 +52,19 @@ class UserService:
         if email:
             user = UserRepository.get_by_email(
                 db,
-                user_params.id
+                email
             )
 
-        elif getattr(user_params, "email", None):
-            user = UserRepository.get_by_email(
-                db,
-                user_params.email
-            )
-
-        elif getattr(user_params, "username", None):
+        elif username:
             user = UserRepository.get_by_username(
                 db,
-                user_params.username
+                username
             )
 
-        elif getattr(user_params, "phone", None):
+        elif phone:
             user = UserRepository.get_by_phone(
                 db,
-                user_params.phone
+                phone
             )
 
         if not user or (user.status is not None and user.status <= 0):
