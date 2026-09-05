@@ -45,10 +45,12 @@ def get_all_users(
 
 @router.get("/details", response_model=UserOut, status_code=200)
 def get_user_by_any_params(
-    user_params: UserIn = Depends(),
+    email: str | None = None,
+    phone: str | None = None,
+    username: str | None = None,
     db: Session = Depends(get_db),
 ):
-    return UserController.get_user_by_any_params(db, user_params)
+    return UserController.get_user_by_any_params(db, email, phone, username)
 
 
 @router.get("/{user_id}", response_model=UserOut, status_code=200)

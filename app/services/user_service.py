@@ -47,32 +47,31 @@ class UserService:
         return user
 
     @staticmethod
-    def getUserByAnyParams(db: Session, user_params: UserIn = None):
+    def getUserByAnyParams(db: Session, email: str | None = None, phone: str | None = None, username: str | None = None):
         user = None
-        if user_params:
-            if getattr(user_params, "id", None):
-                user = UserRepository.get_by_id(
-                    db,
-                    user_params.id
-                )
+        if email:
+            user = UserRepository.get_by_email(
+                db,
+                user_params.id
+            )
 
-            elif getattr(user_params, "email", None):
-                user = UserRepository.get_by_email(
-                    db,
-                    user_params.email
-                )
+        elif getattr(user_params, "email", None):
+            user = UserRepository.get_by_email(
+                db,
+                user_params.email
+            )
 
-            elif getattr(user_params, "username", None):
-                user = UserRepository.get_by_username(
-                    db,
-                    user_params.username
-                )
+        elif getattr(user_params, "username", None):
+            user = UserRepository.get_by_username(
+                db,
+                user_params.username
+            )
 
-            elif getattr(user_params, "phone", None):
-                user = UserRepository.get_by_phone(
-                    db,
-                    user_params.phone
-                )
+        elif getattr(user_params, "phone", None):
+            user = UserRepository.get_by_phone(
+                db,
+                user_params.phone
+            )
 
         if not user or (user.status is not None and user.status <= 0):
             raise HTTPException(

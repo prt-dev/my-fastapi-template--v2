@@ -32,8 +32,8 @@ class UserController:
         return UserService.getUserById(db, user_id)
 
     @staticmethod
-    def get_user_by_any_params(db: Session, user_params: UserIn):
-        return UserService.getUserByAnyParams(db, user_params)
+    def get_user_by_any_params(db: Session, email: str | None = None, phone: str | None = None, username: str | None = None):
+        return UserService.getUserByAnyParams(db, email, phone, username)
 
     @staticmethod
     def create_user(db: Session, request: UserIn):
