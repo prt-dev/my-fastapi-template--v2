@@ -5,6 +5,8 @@ from app.models.category import Category
 from app.models.client import Client
 from app.models.blog import Blog
 from app.models.cart import Cart
+from app.models.order import Order
+from app.models.payment import Payment
 from app.models.permission import (
     Permission,
     ProductPermissions,
@@ -12,6 +14,8 @@ from app.models.permission import (
     ClientPermissions,
     BlogPermissions,
     CartPermissions,
+    OrderPermissions,
+    PaymentPermissions,
 )
 from app.models.role_permission import RolePermission
 
@@ -23,12 +27,16 @@ __all__ = [
     "Client",
     "Blog",
     "Cart",
+    "Order",
+    "Payment",
     "Permission",
     "ProductPermissions",
     "CategoryPermissions",
     "ClientPermissions",
     "BlogPermissions",
     "CartPermissions",
+    "OrderPermissions",
+    "PaymentPermissions",
     "RolePermission",
 ]
 

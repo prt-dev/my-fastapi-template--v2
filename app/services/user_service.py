@@ -17,16 +17,18 @@ class UserService:
         role_id: int | None = None,
         exclude_roles: list[int] | None = None,
         search: str | None = None,
+        status: int | None = None,
         page: int = 1,
         limit: int = 10
     ):
         total, users = UserRepository.get_all_users(
-            db,
-            role_id,
-            exclude_roles,
-            search,
-            page,
-            limit
+            db=db,
+            role_id=role_id,
+            exclude_roles=exclude_roles,
+            search=search,
+            status=status,
+            page=page,
+            limit=limit
         )
 
         return {
@@ -37,7 +39,7 @@ class UserService:
     @staticmethod
     def getUserById(db: Session, user_id: int):
         user = UserRepository.get_by_id(db, user_id)
-        if not user:
+        if not user or (user.status is not None and user.status <= 0):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"User with ID {user_id} not found"
@@ -46,6 +48,7 @@ class UserService:
 
     @staticmethod
     def getUserByAnyParams(db: Session, user_params: UserIn):
+        user = None
         if user_params.id:
             user = UserRepository.get_by_id(db, user_params.id)
         elif user_params.email:
@@ -54,10 +57,10 @@ class UserService:
             user = UserRepository.get_by_username(db, user_params.username)
         elif user_params.phone:
             user = UserRepository.get_by_phone(db, user_params.phone)
-        if not user:
+        if not user or (user.status is not None and user.status <= 0):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with ID {user_params.id} not found"
+                detail="User not found"
             )
         return user
 

@@ -50,6 +50,24 @@ class CartPermissions:
     LIST = "carts:list"
 
 
+class OrderPermissions:
+    """Predefined permission names for order module."""
+    CREATE = "orders:create"
+    READ = "orders:read"
+    UPDATE = "orders:update"
+    DELETE = "orders:delete"
+    LIST = "orders:list"
+
+
+class PaymentPermissions:
+    """Predefined permission names for payment module."""
+    CREATE = "payments:create"
+    READ = "payments:read"
+    UPDATE = "payments:update"
+    DELETE = "payments:delete"
+    LIST = "payments:list"
+
+
 class Permission(Base):
     __tablename__ = "permissions"
 

@@ -13,6 +13,7 @@ class UserController:
         role_id: int | None = None,
         exclude_roles: list[int] | None = None,
         search: str | None = None,
+        status: int | None = None,
         page: int = 1,
         limit: int = 10
     ):
@@ -21,6 +22,7 @@ class UserController:
             role_id=role_id,
             exclude_roles=exclude_roles,
             search=search,
+            status=status,
             page=page,
             limit=limit
         )

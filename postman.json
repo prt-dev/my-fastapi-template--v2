@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "fastapi-template-collection-v2",
     "name": "FastAPI Template API",
-    "description": "Complete API Collection for FastAPI Backend including Auth, Users, Categories, Products, Carts, Clients, Blogs, Uploads, and Remote File Uploads.",
+    "description": "Complete API Collection for FastAPI Backend including Auth, Users, Categories, Products, Carts, Orders, Payments, Clients, Blogs, Uploads, and Remote File Uploads.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -123,7 +123,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{host}}/api/v1/users/all?page=1&limit=10&search=&role_id=&exclude_roles=",
+              "raw": "{{host}}/api/v1/users/all?page=1&limit=10&search=&role_id=&exclude_roles=&status=",
               "host": [
                 "{{host}}"
               ],
@@ -154,6 +154,11 @@
                   "key": "exclude_roles",
                   "value": "",
                   "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by user status (defaults to status > 0 if omitted)"
                 }
               ]
             }
@@ -481,7 +486,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{host}}/api/v1/products/all?page=1&limit=10&search=&category_id=&status=",
+              "raw": "{{host}}/api/v1/products/all?page=1&limit=10&search=&category_id=&status=&variant=",
               "host": [
                 "{{host}}"
               ],
@@ -510,6 +515,10 @@
                 },
                 {
                   "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "variant",
                   "value": ""
                 }
               ]
@@ -784,6 +793,374 @@
                 "v1",
                 "carts",
                 "clear"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/orders/all?page=1&limit=10&search=&status=&user_id=",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "user_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/orders/my-orders",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "my-orders"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/orders/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/orders/number/ORD-20260905-001",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "number",
+                "ORD-20260905-001"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 499.0,\n  \"currency\": \"INR\",\n  \"status\": \"pending\",\n  \"phone\": \"9876543210\",\n  \"email\": \"user@example.com\",\n  \"username\": \"testuser\",\n  \"razorpay_order_id\": \"order_DA1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/orders/create",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "create"
+              ]
+            },
+            "description": "Create order. User ID can be determined from the authenticated bearer token, or resolved automatically via phone, email, or username in the request body."
+          }
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"paid\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/orders/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/orders/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/payments/all?page=1&limit=10&search=&status=&order_id=",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "order_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/payments/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Payments by Order ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/payments/order/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "order",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Payment Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1,\n  \"amount\": 499.0,\n  \"currency\": \"INR\",\n  \"status\": \"pending\",\n  \"razorpay_order_id\": \"order_DA1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/payments/create",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "create"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify Razorpay Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1,\n  \"razorpay_order_id\": \"order_DA1234567890\",\n  \"razorpay_payment_id\": \"pay_DA1234567890\",\n  \"razorpay_signature\": \"generated_razorpay_signature_here\"\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/payments/verify",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "verify"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Payment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"captured\",\n  \"signature_verified\": true\n}"
+            },
+            "url": {
+              "raw": "{{host}}/api/v1/payments/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Payment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/payments/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "1"
               ]
             }
           }

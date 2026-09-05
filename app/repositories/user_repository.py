@@ -36,6 +36,7 @@ class UserRepository:
         role_id: int | None = None,
         exclude_roles: list[int] | None = None,
         search: str | None = None,
+        status: int | None = None,
         page: int = 1,
         limit: int = 10
     ):
@@ -45,6 +46,11 @@ class UserRepository:
         skip = (page - 1) * limit
 
         query = db.query(Userdata)
+
+        if status is not None:
+            query = query.filter(Userdata.status == status)
+        else:
+            query = query.filter(Userdata.status > 0)
 
         if role_id is not None:
             query = query.filter(

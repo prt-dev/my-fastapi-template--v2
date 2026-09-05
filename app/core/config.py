@@ -20,6 +20,8 @@ REMOTE_UPLOAD_API_URL = os.getenv("REMOTE_UPLOAD_API_URL", "https://apiapp.hotel
 REMOTE_UPLOAD_BASE_URL = os.getenv("REMOTE_UPLOAD_BASE_URL", "https://apiapp.hotelmahalaiims.com")
 
 
+RAZORPAY_KEY_ID=os.getenv('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET=os.getenv('RAZORPAY_KEY_SECRET')
 
 class Settings():
 

@@ -26,6 +26,7 @@ def get_all_users(
     role_id: int | None = None,
     exclude_roles: list[int] | None = Query(None),
     search: str | None = None,
+    status: int | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
@@ -36,6 +37,7 @@ def get_all_users(
         role_id=role_id,
         exclude_roles=exclude_roles,
         search=search,
+        status=status,
         page=page,
         limit=limit
     )
