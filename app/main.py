@@ -15,8 +15,10 @@ from app.router.order_router import router as order_router
 from app.router.payment_router import router as payment_router
 from app.router.client_router import router as client_router
 from app.router.blog_router import router as blog_router
+from app.router.contact_router import router as contact_router
 from app.router.upload_router import router as upload_router
 from app.router.remote_file_upload_router import router as remote_file_upload_router
+from app.router.razorpay_router import router as razorpay_router
 
 app = FastAPI(title="FastAPI Template API", version="1.0.0")
 
@@ -44,8 +46,10 @@ api_router.include_router(order_router)
 api_router.include_router(payment_router)
 api_router.include_router(client_router)
 api_router.include_router(blog_router)
+api_router.include_router(contact_router)
 api_router.include_router(upload_router)
 api_router.include_router(remote_file_upload_router)
+api_router.include_router(razorpay_router)
 
 app.include_router(api_router)
 

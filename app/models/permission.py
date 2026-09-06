@@ -68,6 +68,15 @@ class PaymentPermissions:
     LIST = "payments:list"
 
 
+class ContactPermissions:
+    """Predefined permission names for contact module."""
+    CREATE = "contacts:create"
+    READ = "contacts:read"
+    UPDATE = "contacts:update"
+    DELETE = "contacts:delete"
+    LIST = "contacts:list"
+
+
 class Permission(Base):
     __tablename__ = "permissions"
 

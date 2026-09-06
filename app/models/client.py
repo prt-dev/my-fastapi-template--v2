@@ -30,3 +30,11 @@ class Client(Base):
         back_populates="client",
         cascade="all, delete-orphan",
     )
+
+    contacts: Mapped[list["Contact"]] = relationship(
+        "Contact",
+        primaryjoin="foreign(Contact.client_id) == Client.id",
+        back_populates="client",
+        cascade="all, delete-orphan",
+    )
+

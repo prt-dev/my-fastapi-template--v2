@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.services.payment_service import PaymentService
-from app.schemas.payment import PaymentIn, RazorpayVerifyIn
+from app.schemas.payment import PaymentIn
 
 
 class PaymentController:
@@ -34,10 +34,6 @@ class PaymentController:
     @staticmethod
     def create_payment(db: Session, request: PaymentIn):
         return PaymentService.createPayment(db, request)
-
-    @staticmethod
-    def verify_razorpay_payment(db: Session, request: RazorpayVerifyIn):
-        return PaymentService.verifyRazorpayPayment(db, request)
 
     @staticmethod
     def update_payment(db: Session, payment_id: int, request: PaymentIn):

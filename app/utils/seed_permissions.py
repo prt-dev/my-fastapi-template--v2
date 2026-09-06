@@ -7,6 +7,7 @@ from app.models.permission import (
     ClientPermissions,
     BlogPermissions,
     CartPermissions,
+    ContactPermissions,
 )
 from app.models.role import Role
 from app.models.role_permission import RolePermission
@@ -123,6 +124,35 @@ DEFAULT_CART_PERMISSIONS = [
     },
 ]
 
+DEFAULT_CONTACT_PERMISSIONS = [
+    {
+        "name": ContactPermissions.CREATE,
+        "description": "Permission to create a new contact inquiry",
+        "module": "contacts",
+    },
+    {
+        "name": ContactPermissions.READ,
+        "description": "Permission to view contact inquiry details",
+        "module": "contacts",
+    },
+    {
+        "name": ContactPermissions.UPDATE,
+        "description": "Permission to update existing contact inquiry",
+        "module": "contacts",
+    },
+    {
+        "name": ContactPermissions.DELETE,
+        "description": "Permission to delete a contact inquiry",
+        "module": "contacts",
+    },
+    {
+        "name": ContactPermissions.LIST,
+        "description": "Permission to view all contact inquiries list",
+        "module": "contacts",
+    },
+]
+
+
 
 def _seed_permissions_list(db: Session, permissions_list: list[dict], module_name: str):
     created_permissions = []
@@ -215,6 +245,18 @@ def seed_cart_permissions(db: Session | None = None):
             db.close()
 
 
+def seed_contact_permissions(db: Session | None = None):
+    should_close = False
+    if db is None:
+        db = SessionLocal()
+        should_close = True
+    try:
+        _seed_permissions_list(db, DEFAULT_CONTACT_PERMISSIONS, "contact")
+    finally:
+        if should_close:
+            db.close()
+
+
 def seed_all_permissions(db: Session | None = None):
     should_close = False
     if db is None:
@@ -225,6 +267,7 @@ def seed_all_permissions(db: Session | None = None):
         _seed_permissions_list(db, DEFAULT_CLIENT_PERMISSIONS, "client")
         _seed_permissions_list(db, DEFAULT_BLOG_PERMISSIONS, "blog")
         _seed_permissions_list(db, DEFAULT_CART_PERMISSIONS, "cart")
+        _seed_permissions_list(db, DEFAULT_CONTACT_PERMISSIONS, "contact")
     finally:
         if should_close:
             db.close()

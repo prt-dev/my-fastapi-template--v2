@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from app.models.order import Order
 from app.repositories.order_repository import OrderRepository
 from app.schemas.order import OrderIn
-from app.services.razorpay_service import RazorpayService
 
 
 class OrderService:
@@ -85,24 +84,6 @@ class OrderService:
             existing = OrderRepository.get_by_order_number(db, order_data["order_number"])
             if existing:
                 raise HTTPException(status_code=400, detail="Order number already exists")
-
-        if not order_data.get("razorpay_order_id") and order_data.get("amount", 0) > 0:
-            try:
-                amount_in_paise = int(round(float(order_data["amount"]) * 100))
-                currency = order_data.get("currency") or "INR"
-                rzp_order = RazorpayService.create_order(
-                    amount=amount_in_paise,
-                    currency=currency,
-                    receipt=order_data["order_number"],
-                    notes={
-                        "order_number": order_data["order_number"],
-                        "user_id": str(user_id)
-                    }
-                )
-                if rzp_order and "id" in rzp_order:
-                    order_data["razorpay_order_id"] = rzp_order["id"]
-            except Exception as e:
-                print(f"Warning: Could not create Razorpay order: {e}")
 
         order = Order(**order_data)
         return OrderRepository.create(db, order)

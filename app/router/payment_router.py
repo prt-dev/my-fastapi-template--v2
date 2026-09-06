@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.dependency import get_current_user
-from app.schemas.payment import PaymentIn, PaymentOut, RazorpayVerifyIn
+from app.schemas.payment import PaymentIn, PaymentOut
 from app.controller.payment_controller import PaymentController
 
 router = APIRouter(
@@ -57,15 +57,6 @@ def create_payment(
     current_user=Depends(get_current_user)
 ):
     return PaymentController.create_payment(db, request)
-
-
-@router.post("/verify", response_model=PaymentOut, status_code=200)
-def verify_razorpay_payment(
-    request: RazorpayVerifyIn,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
-):
-    return PaymentController.verify_razorpay_payment(db, request)
 
 
 @router.put("/{payment_id}", response_model=PaymentOut, status_code=200)

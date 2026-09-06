@@ -25,9 +25,5 @@ class PaymentIn(PaymentOut):
     pass
 
 
-# Request Schema to verify Razorpay payment signature
-class RazorpayVerifyIn(BaseModel):
-    razorpay_order_id: str
-    razorpay_payment_id: str
-    razorpay_signature: str
-    order_id: Optional[int] = None
+# Re-export RazorpayVerifyIn from razorpay schemas for compatibility
+from app.schemas.razorpay import RazorpayVerifyIn
