@@ -9,6 +9,7 @@ class OrderController:
     def get_all_orders(
         db: Session,
         user_id: int | None = None,
+        cart_id: int | None = None,
         status: str | None = None,
         search: str | None = None,
         page: int = 1,
@@ -17,6 +18,7 @@ class OrderController:
         return OrderService.getOrders(
             db=db,
             user_id=user_id,
+            cart_id=cart_id,
             status=status,
             search=search,
             page=page,

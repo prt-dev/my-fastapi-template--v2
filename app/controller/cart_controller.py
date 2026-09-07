@@ -28,8 +28,12 @@ class CartController:
         return CartService.getCartById(db, cart_id)
 
     @staticmethod
-    def get_user_cart(db: Session, user_id: int):
+    def get_user_cart(db: Session, user_id: int | None = None):
         return CartService.getUserCart(db, user_id)
+
+    @staticmethod
+    def get_latest_user_cart(db: Session, user_id: int):
+        return CartService.getLatestUserCart(db, user_id)
 
     @staticmethod
     def create_cart_item(db: Session, request: CartIn, current_user_id: int | None = None):
@@ -52,5 +56,5 @@ class CartController:
         return CartService.deleteCart(db, cart_id, current_user_id=current_user_id)
 
     @staticmethod
-    def clear_user_cart(db: Session, user_id: int):
+    def clear_user_cart(db: Session, user_id: int | None = None):
         return CartService.clearCart(db, user_id)

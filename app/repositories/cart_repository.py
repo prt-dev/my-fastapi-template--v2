@@ -63,12 +63,13 @@ class CartRepository:
             query = query.outerjoin(Cart.product).filter(
                 or_(
                     Cart.variant.ilike(f"%{search}%"),
+                    Cart.products.ilike(f"%{search}%"),
                     Product.name.ilike(f"%{search}%")
                 )
             )
 
         total = query.count()
-        cart_items = query.offset(skip).limit(limit).all()
+        cart_items = query.order_by(Cart.id.desc()).offset(skip).limit(limit).all()
 
         return total, cart_items
 
@@ -76,7 +77,13 @@ class CartRepository:
     def get_user_cart(db: Session, user_id: int):
         return db.query(Cart).filter(
             Cart.user_id == user_id
-        ).all()
+        ).order_by(Cart.id.desc()).all()
+
+    @staticmethod
+    def get_latest_user_cart(db: Session, user_id: int):
+        return db.query(Cart).filter(
+            Cart.user_id == user_id
+        ).order_by(Cart.id.desc()).first()
 
     @staticmethod
     def create(db: Session, cart: Cart):

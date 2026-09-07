@@ -1,3 +1,4 @@
+import json
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -40,7 +41,13 @@ class CartService:
         return cart
 
     @staticmethod
-    def getUserCart(db: Session, user_id: int):
+    def getUserCart(db: Session, user_id: int | None):
+        if not user_id:
+            return {
+                "total_items": 0,
+                "subtotal": 0.0,
+                "items": []
+            }
         items = CartRepository.get_user_cart(db, user_id)
         total_items = sum(item.quantity for item in items)
         subtotal = round(sum(item.price * item.quantity for item in items), 2)
@@ -49,6 +56,13 @@ class CartService:
             "subtotal": subtotal,
             "items": items
         }
+
+    @staticmethod
+    def getLatestUserCart(db: Session, user_id: int):
+        cart = CartRepository.get_latest_user_cart(db, user_id)
+        if not cart:
+            raise HTTPException(status_code=404, detail="Cart not found")
+        return cart
 
     @staticmethod
     def createCart(db: Session, request: CartIn, current_user_id: int | None = None):
@@ -60,29 +74,37 @@ class CartService:
         if not cart_data.get("user_id"):
             raise HTTPException(status_code=400, detail="User ID is required")
 
-        if not cart_data.get("product_id"):
-            raise HTTPException(status_code=400, detail="Product ID is required")
+        cart_data.pop("user", None)
+        cart_data.pop("product", None)
 
-        product = ProductRepository.get_by_id(db, cart_data["product_id"])
-        if not product:
-            raise HTTPException(status_code=404, detail="Product not found")
+        # Handle products attribute as text (in place of product_id)
+        if "products" in cart_data and cart_data["products"] is not None:
+            if not isinstance(cart_data["products"], str):
+                cart_data["products"] = json.dumps(cart_data["products"])
 
-        if cart_data.get("price") is None or cart_data.get("price") == 0:
-            cart_data["price"] = product.price
+        product_id = cart_data.get("product_id")
+        if product_id:
+            product = ProductRepository.get_by_id(db, product_id)
+            if product and (cart_data.get("price") is None or cart_data.get("price") == 0):
+                cart_data["price"] = product.price
 
-        existing_item = CartRepository.get_by_user_product_variant(
-            db=db,
-            user_id=cart_data["user_id"],
-            product_id=cart_data["product_id"],
-            variant=cart_data.get("variant")
-        )
+            existing_item = CartRepository.get_by_user_product_variant(
+                db=db,
+                user_id=cart_data["user_id"],
+                product_id=product_id,
+                variant=cart_data.get("variant")
+            )
 
-        if existing_item:
-            new_quantity = existing_item.quantity + cart_data.get("quantity", 1)
-            update_data = {"quantity": new_quantity}
-            if cart_data.get("price") is not None and cart_data.get("price") > 0:
-                update_data["price"] = cart_data["price"]
-            return CartRepository.update(db, existing_item, update_data)
+            if existing_item:
+                new_quantity = existing_item.quantity + cart_data.get("quantity", 1)
+                update_data = {"quantity": new_quantity}
+                if cart_data.get("price") is not None and cart_data.get("price") > 0:
+                    update_data["price"] = cart_data["price"]
+                if "products" in cart_data:
+                    update_data["products"] = cart_data["products"]
+                return CartRepository.update(db, existing_item, update_data)
+        elif not cart_data.get("products"):
+            raise HTTPException(status_code=400, detail="Products or Product ID is required")
 
         cart = Cart(**cart_data)
         return CartRepository.create(db, cart)
@@ -113,6 +135,13 @@ class CartService:
             raise HTTPException(status_code=403, detail="Not authorized to update this cart item")
 
         update_data = request.model_dump(exclude_unset=True)
+        update_data.pop("user", None)
+        update_data.pop("product", None)
+
+        if "products" in update_data and update_data["products"] is not None:
+            if not isinstance(update_data["products"], str):
+                update_data["products"] = json.dumps(update_data["products"])
+
         return CartRepository.update(db, cart, update_data)
 
     @staticmethod
@@ -128,6 +157,8 @@ class CartService:
         return {"message": "Cart item deleted successfully"}
 
     @staticmethod
-    def clearCart(db: Session, user_id: int):
+    def clearCart(db: Session, user_id: int | None):
+        if not user_id:
+            return {"message": "Cart cleared successfully"}
         CartRepository.clear_user_cart(db, user_id)
         return {"message": "Cart cleared successfully"}

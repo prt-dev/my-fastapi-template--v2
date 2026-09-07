@@ -34,6 +34,7 @@ class OrderRepository:
     def get_all_orders(
         db: Session,
         user_id: int | None = None,
+        cart_id: int | None = None,
         status: str | None = None,
         search: str | None = None,
         page: int = 1,
@@ -45,6 +46,9 @@ class OrderRepository:
         if user_id is not None:
             query = query.filter(Order.user_id == user_id)
 
+        if cart_id is not None:
+            query = query.filter(Order.cart_id == cart_id)
+
         if status is not None:
             query = query.filter(Order.status == status)
 
@@ -52,6 +56,7 @@ class OrderRepository:
             query = query.filter(
                 or_(
                     Order.order_number.ilike(f"%{search}%"),
+                    Order.products.ilike(f"%{search}%"),
                     Order.razorpay_order_id.ilike(f"%{search}%"),
                     Order.status.ilike(f"%{search}%")
                 )

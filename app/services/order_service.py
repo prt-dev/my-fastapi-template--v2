@@ -1,3 +1,4 @@
+import json
 import uuid
 from datetime import datetime
 from fastapi import HTTPException
@@ -14,6 +15,7 @@ class OrderService:
     def getOrders(
         db: Session,
         user_id: int | None = None,
+        cart_id: int | None = None,
         status: str | None = None,
         search: str | None = None,
         page: int = 1,
@@ -22,6 +24,7 @@ class OrderService:
         total, orders = OrderRepository.get_all_orders(
             db=db,
             user_id=user_id,
+            cart_id=cart_id,
             status=status,
             search=search,
             page=page,
@@ -58,6 +61,9 @@ class OrderService:
         phone = order_data.pop("phone", None)
         email = order_data.pop("email", None)
         username = order_data.pop("username", None)
+        order_data.pop("user", None)
+        order_data.pop("cart", None)
+        order_data.pop("payments", None)
 
         user_id = order_data.get("user_id") or current_user_id
         if not user_id:
@@ -75,6 +81,10 @@ class OrderService:
             )
 
         order_data["user_id"] = user_id
+
+        if "products" in order_data and order_data["products"] is not None:
+            if not isinstance(order_data["products"], str):
+                order_data["products"] = json.dumps(order_data["products"])
 
         if not order_data.get("order_number"):
             timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
@@ -95,6 +105,16 @@ class OrderService:
             raise HTTPException(status_code=404, detail="Order not found")
 
         update_data = request.model_dump(exclude_unset=True)
+        update_data.pop("user", None)
+        update_data.pop("cart", None)
+        update_data.pop("payments", None)
+        update_data.pop("phone", None)
+        update_data.pop("email", None)
+        update_data.pop("username", None)
+
+        if "products" in update_data and update_data["products"] is not None:
+            if not isinstance(update_data["products"], str):
+                update_data["products"] = json.dumps(update_data["products"])
 
         if "order_number" in update_data and update_data["order_number"] != order.order_number:
             existing = OrderRepository.get_by_order_number(db, update_data["order_number"])

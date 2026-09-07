@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.dependency import get_current_user
+from app.core.dependency import get_optional_current_user
 from app.schemas.cart import CartIn, CartOut
 from app.controller.cart_controller import CartController
 
@@ -30,7 +30,7 @@ def get_all_carts(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     return CartController.get_all_cart_items(
         db=db,
@@ -45,17 +45,26 @@ def get_all_carts(
 @router.get("/my-cart", status_code=200)
 def get_my_cart(
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     user_id = _extract_user_id(current_user)
     return CartController.get_user_cart(db, user_id=user_id)
+
+
+@router.get("/latest/{user_id}", response_model=CartOut, status_code=200)
+def get_latest_user_cart(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_optional_current_user)
+):
+    return CartController.get_latest_user_cart(db, user_id=user_id)
 
 
 @router.get("/{cart_id}", response_model=CartOut, status_code=200)
 def get_cart_item(
     cart_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     return CartController.get_cart_by_id(db, cart_id)
 
@@ -64,7 +73,7 @@ def get_cart_item(
 def create_cart_item(
     request: CartIn,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     user_id = _extract_user_id(current_user)
     return CartController.create_cart_item(db, request, current_user_id=user_id)
@@ -87,7 +96,7 @@ def update_cart_item(
     cart_id: int,
     request: CartIn,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     user_id = _extract_user_id(current_user)
     return CartController.update_cart_item(db, cart_id, request, current_user_id=user_id)
@@ -96,7 +105,7 @@ def update_cart_item(
 @router.delete("/clear", status_code=200)
 def clear_my_cart(
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     user_id = _extract_user_id(current_user)
     return CartController.clear_user_cart(db, user_id=user_id)
@@ -106,7 +115,7 @@ def clear_my_cart(
 def delete_cart_item(
     cart_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_optional_current_user)
 ):
     user_id = _extract_user_id(current_user)
     return CartController.delete_cart_item(db, cart_id, current_user_id=user_id)

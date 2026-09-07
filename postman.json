@@ -636,7 +636,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"product_id\": 1,\n  \"variant\": \"Size 4\",\n  \"quantity\": 1,\n  \"price\": 149.0\n}"
+              "raw": "{\n  \"user_id\": 1,\n  \"products\": \"[{\\\"id\\\": 1, \\\"title\\\": \\\"Sacred Laddu Gopal Idol\\\", \\\"price\\\": 499.0, \\\"quantity\\\": 1, \\\"selectedVariant\\\": \\\"Size 4\\\"}]\",\n  \"quantity\": 1,\n  \"price\": 499.0\n}"
             },
             "url": {
               "raw": "{{host}}/api/v1/carts/create",
@@ -667,6 +667,26 @@
                 "v1",
                 "carts",
                 "my-cart"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Latest Cart by User ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/api/v1/carts/latest/1",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "carts",
+                "latest",
+                "1"
               ]
             }
           }
@@ -743,7 +763,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"product_id\": 1,\n  \"variant\": \"Size 4\",\n  \"quantity\": 2,\n  \"price\": 149.0\n}"
+              "raw": "{\n  \"products\": \"[{\\\"id\\\": 1, \\\"title\\\": \\\"Sacred Laddu Gopal Idol\\\", \\\"price\\\": 499.0, \\\"quantity\\\": 2, \\\"selectedVariant\\\": \\\"Size 4\\\"}]\",\n  \"quantity\": 2,\n  \"price\": 499.0\n}"
             },
             "url": {
               "raw": "{{host}}/api/v1/carts/1",
@@ -808,7 +828,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{host}}/api/v1/orders/all?page=1&limit=10&search=&status=&user_id=",
+              "raw": "{{host}}/api/v1/orders/all?page=1&limit=10&search=&status=&user_id=&cart_id=",
               "host": [
                 "{{host}}"
               ],
@@ -837,6 +857,10 @@
                 },
                 {
                   "key": "user_id",
+                  "value": ""
+                },
+                {
+                  "key": "cart_id",
                   "value": ""
                 }
               ]
@@ -913,7 +937,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 499.0,\n  \"currency\": \"INR\",\n  \"status\": \"pending\",\n  \"phone\": \"9876543210\",\n  \"email\": \"user@example.com\",\n  \"username\": \"testuser\",\n  \"razorpay_order_id\": \"order_DA1234567890\"\n}"
+              "raw": "{\n  \"amount\": 499.0,\n  \"currency\": \"INR\",\n  \"status\": \"pending\",\n  \"cart_id\": 1,\n  \"products\": \"[{\\\"id\\\": 1, \\\"name\\\": \\\"Sacred Laddu Gopal Idol\\\", \\\"quantity\\\": 1, \\\"price\\\": 499.0}]\",\n  \"phone\": \"9876543210\",\n  \"email\": \"user@example.com\",\n  \"username\": \"testuser\"\n}"
             },
             "url": {
               "raw": "{{host}}/api/v1/orders/create",

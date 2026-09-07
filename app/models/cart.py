@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy import Integer, String, Float
+from sqlalchemy import Integer, String, Float, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship, foreign
 
 from app.core.database import Base
@@ -15,7 +15,8 @@ class Cart(Base):
     )
 
     user_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
-    product_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    products: Mapped[str | None] = mapped_column(Text, nullable=True)
+    product_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     variant: Mapped[str | None] = mapped_column(String(255), nullable=True)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     price: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)

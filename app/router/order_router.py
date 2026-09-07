@@ -25,6 +25,7 @@ def _extract_user_id(current_user) -> int | None:
 @router.get("/all", status_code=200)
 def get_all_orders(
     user_id: int | None = None,
+    cart_id: int | None = None,
     status: str | None = None,
     search: str | None = None,
     page: int = Query(1, ge=1),
@@ -35,6 +36,7 @@ def get_all_orders(
     return OrderController.get_all_orders(
         db=db,
         user_id=user_id,
+        cart_id=cart_id,
         status=status,
         search=search,
         page=page,

@@ -1,5 +1,5 @@
 from typing import Optional, List
-from sqlalchemy import Integer, String, Float
+from sqlalchemy import Integer, String, Float, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship, foreign
 
 from app.core.database import Base
@@ -21,6 +21,8 @@ class Order(Base):
         nullable=False,
     )
     user_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    cart_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    products: Mapped[str | None] = mapped_column(Text, nullable=True)
     amount: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     currency: Mapped[str] = mapped_column(String(10), nullable=False, default="INR")
     status: Mapped[str] = mapped_column(String(50), nullable=False, default="pending")
@@ -30,6 +32,11 @@ class Order(Base):
     user: Mapped[Optional["Userdata"]] = relationship(
         "Userdata",
         primaryjoin="foreign(Order.user_id) == Userdata.id",
+    )
+
+    cart: Mapped[Optional["Cart"]] = relationship(
+        "Cart",
+        primaryjoin="foreign(Order.cart_id) == Cart.id",
     )
 
     payments: Mapped[List["Payment"]] = relationship(
