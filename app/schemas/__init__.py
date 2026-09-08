@@ -2,7 +2,7 @@ from app.schemas.auth import LoginRequest
 from app.schemas.product import ProductIn, ProductOut
 from app.schemas.client import ClientIn, ClientOut
 from app.schemas.blog import BlogIn, BlogOut
-from app.schemas.cart import CartIn, CartOut
+from app.schemas.cart import CartIn, CartOut, CartUpdate
 from app.schemas.contact import ContactIn, ContactOut
 from app.schemas.user import UserIn, UserOut
 from app.schemas.permission import PermissionIn, PermissionOut, RolePermissionOut
@@ -20,6 +20,7 @@ __all__ = [
     "BlogOut",
     "CartIn",
     "CartOut",
+    "CartUpdate",
     "ContactIn",
     "ContactOut",
     "UserIn",

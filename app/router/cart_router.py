@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.dependency import get_optional_current_user
-from app.schemas.cart import CartIn, CartOut
+from app.schemas.cart import CartIn, CartOut, CartUpdate
 from app.controller.cart_controller import CartController
 
 router = APIRouter(
@@ -94,7 +94,7 @@ def create_cart_item(
 @router.put("/{cart_id}", response_model=CartOut, status_code=200)
 def update_cart_item(
     cart_id: int,
-    request: CartIn,
+    request: CartUpdate,
     db: Session = Depends(get_db),
     current_user=Depends(get_optional_current_user)
 ):

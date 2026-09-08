@@ -20,7 +20,7 @@ class Product(Base):
     sku: Mapped[str | None] = mapped_column(String(100), unique=True, index=True, nullable=True)
     stock_quantity: Mapped[int] = mapped_column(Integer, default=0)
     category_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     variant: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[int] = mapped_column(Integer, default=1)
     

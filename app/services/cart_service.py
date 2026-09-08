@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.cart import Cart
 from app.repositories.cart_repository import CartRepository
 from app.repositories.product_repository import ProductRepository
-from app.schemas.cart import CartIn
+from app.schemas.cart import CartIn, CartUpdate
 
 
 class CartService:
@@ -49,8 +49,8 @@ class CartService:
                 "items": []
             }
         items = CartRepository.get_user_cart(db, user_id)
-        total_items = sum(item.quantity for item in items)
-        subtotal = round(sum(item.price * item.quantity for item in items), 2)
+        total_items = sum((item.quantity or 0) for item in items)
+        subtotal = round(sum(((item.price or 0.0) * (item.quantity or 0)) for item in items), 2)
         return {
             "total_items": total_items,
             "subtotal": subtotal,
@@ -77,8 +77,11 @@ class CartService:
         cart_data.pop("user", None)
         cart_data.pop("product", None)
 
+        if not cart_data.get("products"):
+            raise HTTPException(status_code=400, detail="Products is required")
+
         # Handle products attribute as text (in place of product_id)
-        if "products" in cart_data and cart_data["products"] is not None:
+        if cart_data.get("products") is not None:
             if not isinstance(cart_data["products"], str):
                 cart_data["products"] = json.dumps(cart_data["products"])
 
@@ -96,15 +99,13 @@ class CartService:
             )
 
             if existing_item:
-                new_quantity = existing_item.quantity + cart_data.get("quantity", 1)
+                new_quantity = (existing_item.quantity or 0) + (cart_data.get("quantity") or 1)
                 update_data = {"quantity": new_quantity}
                 if cart_data.get("price") is not None and cart_data.get("price") > 0:
                     update_data["price"] = cart_data["price"]
                 if "products" in cart_data:
                     update_data["products"] = cart_data["products"]
                 return CartRepository.update(db, existing_item, update_data)
-        elif not cart_data.get("products"):
-            raise HTTPException(status_code=400, detail="Products or Product ID is required")
 
         cart = Cart(**cart_data)
         return CartRepository.create(db, cart)
@@ -126,7 +127,7 @@ class CartService:
         return result_items
 
     @staticmethod
-    def updateCart(db: Session, cart_id: int, request: CartIn, current_user_id: int | None = None):
+    def updateCart(db: Session, cart_id: int, request: CartIn | CartUpdate, current_user_id: int | None = None):
         cart = CartRepository.get_by_id(db, cart_id)
         if not cart:
             raise HTTPException(status_code=404, detail="Cart item not found")

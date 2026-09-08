@@ -12,8 +12,8 @@ class CartOut(BaseModel):
     products: Optional[Union[str, Any]] = None
     product_id: Optional[int] = None
     variant: Optional[str] = Field(None, max_length=255)
-    quantity: Optional[int] = Field(1, ge=1)
-    price: Optional[float] = Field(0.0, ge=0)
+    quantity: Optional[int] = None
+    price: Optional[float] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     user: Optional[UserOut] = None
@@ -24,6 +24,21 @@ class CartOut(BaseModel):
     )
 
 
-# Request Schema to create/update cart
-class CartIn(CartOut):
-    pass
+# Request Schema to create cart
+class CartIn(BaseModel):
+    user_id: Optional[int] = None
+    products: Union[str, Any]
+    product_id: Optional[int] = None
+    variant: Optional[str] = Field(None, max_length=255)
+    quantity: Optional[int] = None
+    price: Optional[float] = None
+
+
+# Request Schema to update cart
+class CartUpdate(BaseModel):
+    user_id: Optional[int] = None
+    products: Optional[Union[str, Any]] = None
+    product_id: Optional[int] = None
+    variant: Optional[str] = Field(None, max_length=255)
+    quantity: Optional[int] = None
+    price: Optional[float] = None

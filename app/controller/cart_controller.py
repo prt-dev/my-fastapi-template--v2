@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.services.cart_service import CartService
-from app.schemas.cart import CartIn
+from app.schemas.cart import CartIn, CartUpdate
 
 
 class CartController:
@@ -48,7 +48,7 @@ class CartController:
         return CartService.createMultipleCarts(db, request, current_user_id=current_user_id)
 
     @staticmethod
-    def update_cart_item(db: Session, cart_id: int, request: CartIn, current_user_id: int | None = None):
+    def update_cart_item(db: Session, cart_id: int, request: CartIn | CartUpdate, current_user_id: int | None = None):
         return CartService.updateCart(db, cart_id, request, current_user_id=current_user_id)
 
     @staticmethod

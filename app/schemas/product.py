@@ -13,7 +13,7 @@ class ProductOut(BaseModel):
     sku: Optional[str] = Field(None, max_length=100)
     stock_quantity: Optional[int] = Field(0, ge=0)
     category_id: Optional[int] = None
-    image_url: Optional[str] = Field(None, max_length=500)
+    image_url: Optional[str] = None
     variant: Optional[str] = None
     status: Optional[int] = 1
     created_at: Optional[datetime] = None

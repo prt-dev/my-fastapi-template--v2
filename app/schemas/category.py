@@ -8,7 +8,7 @@ class CategoryOut(BaseModel):
     name: Optional[str] = Field(None, max_length=255)
     slug: Optional[str] = Field(None, max_length=255)
     description: Optional[str] = None
-    image_url: Optional[str] = Field(None, max_length=500)
+    image_url: Optional[str] = None
     parent_id: Optional[int] = None
     status: Optional[int] = 1
     created_at: Optional[datetime] = None

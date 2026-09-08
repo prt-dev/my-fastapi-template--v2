@@ -15,11 +15,11 @@ class Cart(Base):
     )
 
     user_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
-    products: Mapped[str | None] = mapped_column(Text, nullable=True)
+    products: Mapped[str] = mapped_column(Text, nullable=False)
     product_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     variant: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    price: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    quantity: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    price: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # Code-level relationships (No DB foreign key constraints)
     user: Mapped[Optional["Userdata"]] = relationship(
