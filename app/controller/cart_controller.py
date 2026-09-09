@@ -10,6 +10,7 @@ class CartController:
         db: Session,
         user_id: int | None = None,
         product_id: int | None = None,
+        status: str | int | None = None,
         search: str | None = None,
         page: int = 1,
         limit: int = 10
@@ -18,6 +19,7 @@ class CartController:
             db=db,
             user_id=user_id,
             product_id=product_id,
+            status=status,
             search=search,
             page=page,
             limit=limit
@@ -28,12 +30,12 @@ class CartController:
         return CartService.getCartById(db, cart_id)
 
     @staticmethod
-    def get_user_cart(db: Session, user_id: int | None = None):
-        return CartService.getUserCart(db, user_id)
+    def get_user_cart(db: Session, user_id: int | None = None, status: str | int | None = None):
+        return CartService.getUserCart(db, user_id, status=status)
 
     @staticmethod
-    def get_latest_user_cart(db: Session, user_id: int):
-        return CartService.getLatestUserCart(db, user_id)
+    def get_latest_user_cart(db: Session, user_id: int, status: str | int | None = None):
+        return CartService.getLatestUserCart(db, user_id, status=status)
 
     @staticmethod
     def create_cart_item(db: Session, request: CartIn, current_user_id: int | None = None):

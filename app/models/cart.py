@@ -20,6 +20,7 @@ class Cart(Base):
     variant: Mapped[str | None] = mapped_column(String(255), nullable=True)
     quantity: Mapped[int | None] = mapped_column(Integer, nullable=True)
     price: Mapped[float | None] = mapped_column(Float, nullable=True)
+    status: Mapped[str | None] = mapped_column(String(50), nullable=True, default="1", server_default="1")
 
     # Code-level relationships (No DB foreign key constraints)
     user: Mapped[Optional["Userdata"]] = relationship(

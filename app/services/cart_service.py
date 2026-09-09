@@ -15,6 +15,7 @@ class CartService:
         db: Session,
         user_id: int | None = None,
         product_id: int | None = None,
+        status: str | int | None = None,
         search: str | None = None,
         page: int = 1,
         limit: int = 10
@@ -23,6 +24,7 @@ class CartService:
             db=db,
             user_id=user_id,
             product_id=product_id,
+            status=status,
             search=search,
             page=page,
             limit=limit
@@ -41,14 +43,14 @@ class CartService:
         return cart
 
     @staticmethod
-    def getUserCart(db: Session, user_id: int | None):
+    def getUserCart(db: Session, user_id: int | None, status: str | int | None = None):
         if not user_id:
             return {
                 "total_items": 0,
                 "subtotal": 0.0,
                 "items": []
             }
-        items = CartRepository.get_user_cart(db, user_id)
+        items = CartRepository.get_user_cart(db, user_id, status=status)
         total_items = sum((item.quantity or 0) for item in items)
         subtotal = round(sum(((item.price or 0.0) * (item.quantity or 0)) for item in items), 2)
         return {
@@ -58,8 +60,8 @@ class CartService:
         }
 
     @staticmethod
-    def getLatestUserCart(db: Session, user_id: int):
-        cart = CartRepository.get_latest_user_cart(db, user_id)
+    def getLatestUserCart(db: Session, user_id: int, status: str | int | None = None):
+        cart = CartRepository.get_latest_user_cart(db, user_id, status=status)
         if not cart:
             raise HTTPException(status_code=404, detail="Cart not found")
         return cart
@@ -79,6 +81,11 @@ class CartService:
 
         if not cart_data.get("products"):
             raise HTTPException(status_code=400, detail="Products is required")
+
+        if "status" not in cart_data or cart_data.get("status") is None:
+            cart_data["status"] = "1"
+        else:
+            cart_data["status"] = str(cart_data["status"])
 
         # Handle products attribute as text (in place of product_id)
         if cart_data.get("products") is not None:
@@ -105,6 +112,8 @@ class CartService:
                     update_data["price"] = cart_data["price"]
                 if "products" in cart_data:
                     update_data["products"] = cart_data["products"]
+                if "status" in cart_data and cart_data["status"] is not None:
+                    update_data["status"] = str(cart_data["status"])
                 return CartRepository.update(db, existing_item, update_data)
 
         cart = Cart(**cart_data)
@@ -138,6 +147,9 @@ class CartService:
         update_data = request.model_dump(exclude_unset=True)
         update_data.pop("user", None)
         update_data.pop("product", None)
+
+        if "status" in update_data and update_data["status"] is not None:
+            update_data["status"] = str(update_data["status"])
 
         if "products" in update_data and update_data["products"] is not None:
             if not isinstance(update_data["products"], str):

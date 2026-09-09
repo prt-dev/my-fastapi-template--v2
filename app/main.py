@@ -20,7 +20,19 @@ from app.router.upload_router import router as upload_router
 from app.router.remote_file_upload_router import router as remote_file_upload_router
 from app.router.razorpay_router import router as razorpay_router
 
+from sqlalchemy import text
+from app.core.database import engine
+
 app = FastAPI(title="FastAPI Template API", version="1.0.0")
+
+@app.on_event("startup")
+def on_startup():
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE carts ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT '1'"))
+            conn.commit()
+    except Exception:
+        pass
 
 app.add_middleware(
     CORSMiddleware,

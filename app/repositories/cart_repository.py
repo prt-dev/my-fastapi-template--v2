@@ -46,6 +46,7 @@ class CartRepository:
         db: Session,
         user_id: int | None = None,
         product_id: int | None = None,
+        status: str | int | None = None,
         search: str | None = None,
         page: int = 1,
         limit: int = 10
@@ -58,6 +59,9 @@ class CartRepository:
 
         if product_id is not None:
             query = query.filter(Cart.product_id == product_id)
+
+        if status is not None:
+            query = query.filter(Cart.status == str(status))
 
         if search is not None:
             query = query.outerjoin(Cart.product).filter(
@@ -74,16 +78,18 @@ class CartRepository:
         return total, cart_items
 
     @staticmethod
-    def get_user_cart(db: Session, user_id: int):
-        return db.query(Cart).filter(
-            Cart.user_id == user_id
-        ).order_by(Cart.id.desc()).all()
+    def get_user_cart(db: Session, user_id: int, status: str | int | None = None):
+        query = db.query(Cart).filter(Cart.user_id == user_id)
+        if status is not None:
+            query = query.filter(Cart.status == str(status))
+        return query.order_by(Cart.id.desc()).all()
 
     @staticmethod
-    def get_latest_user_cart(db: Session, user_id: int):
-        return db.query(Cart).filter(
-            Cart.user_id == user_id
-        ).order_by(Cart.id.desc()).first()
+    def get_latest_user_cart(db: Session, user_id: int, status: str | int | None = None):
+        query = db.query(Cart).filter(Cart.user_id == user_id)
+        if status is not None:
+            query = query.filter(Cart.status == str(status))
+        return query.order_by(Cart.id.desc()).first()
 
     @staticmethod
     def create(db: Session, cart: Cart):

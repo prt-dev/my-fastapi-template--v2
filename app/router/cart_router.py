@@ -26,6 +26,7 @@ def _extract_user_id(current_user) -> int | None:
 def get_all_carts(
     user_id: int | None = None,
     product_id: int | None = None,
+    status: str | int | None = None,
     search: str | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
@@ -36,6 +37,7 @@ def get_all_carts(
         db=db,
         user_id=user_id,
         product_id=product_id,
+        status=status,
         search=search,
         page=page,
         limit=limit
@@ -44,20 +46,22 @@ def get_all_carts(
 
 @router.get("/my-cart", status_code=200)
 def get_my_cart(
+    status: str | int | None = None,
     db: Session = Depends(get_db),
     current_user=Depends(get_optional_current_user)
 ):
     user_id = _extract_user_id(current_user)
-    return CartController.get_user_cart(db, user_id=user_id)
+    return CartController.get_user_cart(db, user_id=user_id, status=status)
 
 
 @router.get("/latest/{user_id}", response_model=CartOut, status_code=200)
 def get_latest_user_cart(
     user_id: int,
+    status: str | int | None = None,
     db: Session = Depends(get_db),
     current_user=Depends(get_optional_current_user)
 ):
-    return CartController.get_latest_user_cart(db, user_id=user_id)
+    return CartController.get_latest_user_cart(db, user_id=user_id, status=status)
 
 
 @router.get("/{cart_id}", response_model=CartOut, status_code=200)
