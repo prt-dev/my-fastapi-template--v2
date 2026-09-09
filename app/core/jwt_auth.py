@@ -12,7 +12,7 @@ def create_access_token(data: dict[str, Any]) -> str:
 
     payload.update({
         "exp": datetime.now(timezone.utc) + timedelta(
-            minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+            minutes=int(settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
         ),
         "type": "access"
     })
@@ -29,7 +29,7 @@ def create_refresh_token(data: dict[str, Any]) -> str:
 
     payload.update({
         "exp": datetime.now(timezone.utc) + timedelta(
-            days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+            days=int(settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS)
         ),
         "type": "refresh"
     })
